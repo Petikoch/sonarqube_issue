@@ -1,0 +1,40 @@
+plugins {
+	id "com.github.ben-manes.versions" version "0.13.0"
+	id "org.sonarqube" version "2.0.1"
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+version = '0.0.1-SNAPSHOT'
+
+def fileEncoding = 'UTF-8'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+def groovyVersion = '2.4.7'
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+}
+
+// remove src/main/java and src/test/java from sourceSets, because we have
+// all java and groovy sources in src/main/groovy and src/test/groovy
+// http://forums.gradle.org/gradle/topics/how_to_compile_groovy_sources_mixed_with_java_sources
+sourceSets.main.java.srcDirs = []
+sourceSets.test.java.srcDirs = []
+sourceSets.main.groovy.srcDirs = ['src/main/groovy']
+sourceSets.test.groovy.srcDirs = ['src/test/groovy']
+
+test {
+    systemProperty 'file.encoding', fileEncoding
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = fileEncoding
+}
